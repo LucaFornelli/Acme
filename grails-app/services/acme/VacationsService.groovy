@@ -1,5 +1,6 @@
 package acme
 
+import grails.converters.JSON
 import grails.gorm.transactions.Transactional
 import groovy.json.JsonSlurper
 
@@ -16,34 +17,32 @@ class VacationsService {
         return result
     }
 
-    Vacations createVacation(String jsonObject) {
+    def createVacation(String jsonObject) {
         def jsonSlurper = new JsonSlurper()
         def vacations
         try {
             vacations = jsonSlurper.parseText(jsonObject) as Vacations
             vacations.validate()
             if (vacations.hasErrors()) {
-                throw new BadRequestException("Some problems encountered during JSON validation process, give a better look at JSON")
+                throw new Exception("Some problems encountered during JSON validation process, give a better look at JSON")
             } else {
                 vacations.save()
+                return vacations.asMap()
             }
-        } catch (ArithmeticException e) {
-            return handleException(e)
         } catch (Exception e) {
-            handleException(e, "There was an error while attempting to parse input JSON")
+            return handleException(e)
         }
-        return vacations
     }
 
     def handleException(Exception e, String message) {
         return [message: e.getMessage(), timestamp: new Date(), status: 500]
     }
 
-    def handleException(ServletException e) {
+    def handleException(Exception e) {
         return [message: e.getMessage(), timestamp: new Date(), status: 500]
     }
 
-    def handleException(BadRequestException) {
+    def handleException(BadRequestException e) {
         return [message: e.getMessage(), timestamp: new Date(), status: 400]
     }
 

@@ -22,14 +22,14 @@ class Vacations {
         numberOfNights(blank: false, nullable: false, max: 31)
         description(blank: false, nullable: false)
         validTill(blank: false, nullable: false)
-        name index: "name_index_idx", validator: { val, obj, errors ->
+        name (index: "name_index_idx", unique: true, validator: { val, obj, errors ->
             if (val == null || val.isEmpty()) {
                 return false
             }
-        }
+        })
     }
 
-    public Map asMap() {
+    Map asMap() {
         def map = [:] as HashMap
         this.class.getDeclaredFields().each {
             if (it.modifiers == java.lang.reflect.Modifier.PRIVATE) {

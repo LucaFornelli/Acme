@@ -1,9 +1,6 @@
 package acme
 
 import grails.converters.JSON
-import groovy.json.JsonSlurper
-
-import javax.servlet.ServletException
 
 class VacationsController {
 
@@ -14,6 +11,7 @@ class VacationsController {
     }
 
     def create() {
-        render vacationsService.createVacation(request.getJSON().toString()).asMap() as JSON
+        def result = vacationsService.createVacation(request.getJSON().toString())
+        render result as JSON
     }
 }
