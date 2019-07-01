@@ -24,12 +24,12 @@ class VacationsService {
             vacations = jsonSlurper.parseText(jsonObject) as Vacations
             vacations.validate()
             if (vacations.hasErrors()) {
-                throw new Exception("Some problems encountered during JSON validation process, give a better look at JSON")
+                throw new BadRequestException("Some problems encountered during JSON validation process, give a better look at JSON")
             } else {
                 vacations.save()
                 return vacations.asMap()
             }
-        } catch (Exception e) {
+        } catch (BadRequestException e) {
             return handleException(e)
         }
     }
